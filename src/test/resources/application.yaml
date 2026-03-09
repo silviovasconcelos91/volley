@@ -1,6 +1,9 @@
 spring:
   datasource:
     url: jdbc:tc:postgresql:17:///volley_test
+  sql:
+    init:
+      mode: always
   jpa:
     hibernate:
       ddl-auto: create-drop
