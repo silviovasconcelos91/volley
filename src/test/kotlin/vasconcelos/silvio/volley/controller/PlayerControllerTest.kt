@@ -16,6 +16,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPat
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.transaction.annotation.Transactional
 import vasconcelos.silvio.volley.controller.dto.PlayerDto
+import vasconcelos.silvio.volley.domain.model.Category
 import vasconcelos.silvio.volley.domain.model.Level
 
 @SpringBootTest
@@ -31,7 +32,7 @@ class PlayerControllerTest {
 
     @Test
     fun should_returnCreatedPlayer_when_postValidPlayer() {
-        val dto = PlayerDto(name = "John", surname = "Doe", email = "john@test.com", age = 25, level = Level.BEGINNER)
+        val dto = PlayerDto(name = "John", surname = "Doe", email = "john@test.com", age = 25, level = Level.BEGINNER, category = Category.LOISIR)
 
         mockMvc.perform(
             post("/api/v1/players")
@@ -45,12 +46,13 @@ class PlayerControllerTest {
             .andExpect(jsonPath("$.email").value("john@test.com"))
             .andExpect(jsonPath("$.age").value(25))
             .andExpect(jsonPath("$.level").value("BEGINNER"))
+            .andExpect(jsonPath("$.category").value("LOISIR"))
     }
 
     @Test
     fun should_returnAllPlayers_when_getPlayers() {
-        createPlayer("Alice", "Smith", "alice@test.com", 22, Level.INTERMEDIATE)
-        createPlayer("Bob", "Jones", "bob@test.com", 30, Level.EXPERT)
+        createPlayer("Alice", "Smith", "alice@test.com", 22, Level.INTERMEDIATE, Category.FEMININ)
+        createPlayer("Bob", "Jones", "bob@test.com", 30, Level.EXPERT, Category.COMPETITION_MIXTE)
 
         mockMvc.perform(get("/api/v1/players"))
             .andExpect(status().isOk)
@@ -61,7 +63,7 @@ class PlayerControllerTest {
 
     @Test
     fun should_returnPlayer_when_getExistingId() {
-        val id = createPlayer("Jane", "Doe", "jane@test.com", 28, Level.ADVANCED)
+        val id = createPlayer("Jane", "Doe", "jane@test.com", 28, Level.ADVANCED, Category.FEMININ)
 
         mockMvc.perform(get("/api/v1/players/$id"))
             .andExpect(status().isOk)
@@ -78,8 +80,8 @@ class PlayerControllerTest {
 
     @Test
     fun should_returnUpdatedPlayer_when_putExistingPlayer() {
-        val id = createPlayer("John", "Doe", "john@test.com", 25, Level.BEGINNER)
-        val updated = PlayerDto(name = "John", surname = "Updated", email = "john.updated@test.com", age = 26, level = Level.INTERMEDIATE)
+        val id = createPlayer("John", "Doe", "john@test.com", 25, Level.BEGINNER, Category.LOISIR)
+        val updated = PlayerDto(name = "John", surname = "Updated", email = "john.updated@test.com", age = 26, level = Level.INTERMEDIATE, category = Category.COMPETITION_MIXTE)
 
         mockMvc.perform(
             put("/api/v1/players/$id")
@@ -96,7 +98,7 @@ class PlayerControllerTest {
 
     @Test
     fun should_return404_when_putNonExistingPlayer() {
-        val dto = PlayerDto(name = "Ghost", surname = "Player", email = "ghost@test.com", age = 20, level = Level.BEGINNER)
+        val dto = PlayerDto(name = "Ghost", surname = "Player", email = "ghost@test.com", age = 20, level = Level.BEGINNER, category = Category.LOISIR)
 
         mockMvc.perform(
             put("/api/v1/players/99999")
@@ -108,7 +110,7 @@ class PlayerControllerTest {
 
     @Test
     fun should_return204_when_deleteExistingPlayer() {
-        val id = createPlayer("ToDelete", "Player", "del@test.com", 22, Level.BEGINNER)
+        val id = createPlayer("ToDelete", "Player", "del@test.com", 22, Level.BEGINNER, Category.JEUNE)
 
         mockMvc.perform(delete("/api/v1/players/$id"))
             .andExpect(status().isNoContent)
@@ -123,8 +125,8 @@ class PlayerControllerTest {
             .andExpect(status().isNotFound)
     }
 
-    private fun createPlayer(name: String, surname: String, email: String, age: Int, level: Level): Long {
-        val dto = PlayerDto(name = name, surname = surname, email = email, age = age, level = level)
+    private fun createPlayer(name: String, surname: String, email: String, age: Int, level: Level, category: Category): Long {
+        val dto = PlayerDto(name = name, surname = surname, email = email, age = age, level = level, category = category)
         val result = mockMvc.perform(
             post("/api/v1/players")
                 .contentType(MediaType.APPLICATION_JSON)

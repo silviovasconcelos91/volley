@@ -1,5 +1,6 @@
 package vasconcelos.silvio.volley.controller.dto
 
+import vasconcelos.silvio.volley.domain.model.Category
 import vasconcelos.silvio.volley.domain.model.Level
 
 data class PlayerDto(
@@ -8,5 +9,6 @@ data class PlayerDto(
     val surname: String,
     val email: String,
     val age: Int,
-    val level: Level
+    val level: Level,
+    val category: Category
 )

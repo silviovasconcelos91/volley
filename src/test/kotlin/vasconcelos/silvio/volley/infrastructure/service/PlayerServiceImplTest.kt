@@ -9,6 +9,7 @@ import org.mockito.Mock
 import org.mockito.Mockito.verify
 import org.mockito.Mockito.`when`
 import org.mockito.junit.jupiter.MockitoExtension
+import vasconcelos.silvio.volley.domain.model.Category
 import vasconcelos.silvio.volley.domain.model.Level
 import vasconcelos.silvio.volley.domain.model.Player
 import vasconcelos.silvio.volley.domain.repository.PlayerRepository
@@ -26,8 +27,8 @@ class PlayerServiceImplTest {
     @Test
     fun should_returnAllPlayers_when_findAll() {
         val players = listOf(
-            Player(id = 1, name = "John", surname = "Doe", email = "john@test.com", age = 25, level = Level.BEGINNER),
-            Player(id = 2, name = "Jane", surname = "Doe", email = "jane@test.com", age = 30, level = Level.ADVANCED)
+            Player(id = 1, name = "John", surname = "Doe", email = "john@test.com", age = 25, level = Level.BEGINNER, category = Category.LOISIR),
+            Player(id = 2, name = "Jane", surname = "Doe", email = "jane@test.com", age = 30, level = Level.ADVANCED, category = Category.FEMININ)
         )
         `when`(playerRepository.findAll()).thenReturn(players)
 
@@ -39,7 +40,7 @@ class PlayerServiceImplTest {
 
     @Test
     fun should_returnPlayer_when_findByIdWithExistingId() {
-        val player = Player(id = 1, name = "John", surname = "Doe", email = "john@test.com", age = 25, level = Level.BEGINNER)
+        val player = Player(id = 1, name = "John", surname = "Doe", email = "john@test.com", age = 25, level = Level.BEGINNER, category = Category.LOISIR)
         `when`(playerRepository.findById(1)).thenReturn(player)
 
         val result = playerService.findById(1)
@@ -58,7 +59,7 @@ class PlayerServiceImplTest {
 
     @Test
     fun should_savePlayer_when_create() {
-        val player = Player(name = "John", surname = "Doe", email = "john@test.com", age = 25, level = Level.BEGINNER)
+        val player = Player(name = "John", surname = "Doe", email = "john@test.com", age = 25, level = Level.BEGINNER, category = Category.LOISIR)
         val savedPlayer = player.copy(id = 1)
         `when`(playerRepository.save(player)).thenReturn(savedPlayer)
 
@@ -70,8 +71,8 @@ class PlayerServiceImplTest {
 
     @Test
     fun should_updatePlayer_when_playerExists() {
-        val existingPlayer = Player(id = 1, name = "John", surname = "Doe", email = "john@test.com", age = 25, level = Level.BEGINNER)
-        val updatedPlayer = Player(name = "John", surname = "Updated", email = "john@test.com", age = 26, level = Level.INTERMEDIATE)
+        val existingPlayer = Player(id = 1, name = "John", surname = "Doe", email = "john@test.com", age = 25, level = Level.BEGINNER, category = Category.LOISIR)
+        val updatedPlayer = Player(name = "John", surname = "Updated", email = "john@test.com", age = 26, level = Level.INTERMEDIATE, category = Category.COMPETITION_MIXTE)
         val savedPlayer = updatedPlayer.copy(id = 1)
         `when`(playerRepository.findById(1)).thenReturn(existingPlayer)
         `when`(playerRepository.save(updatedPlayer.copy(id = 1))).thenReturn(savedPlayer)
@@ -85,7 +86,7 @@ class PlayerServiceImplTest {
 
     @Test
     fun should_throwException_when_updateNonExistingPlayer() {
-        val player = Player(name = "John", surname = "Doe", email = "john@test.com", age = 25, level = Level.BEGINNER)
+        val player = Player(name = "John", surname = "Doe", email = "john@test.com", age = 25, level = Level.BEGINNER, category = Category.LOISIR)
         `when`(playerRepository.findById(99)).thenReturn(null)
 
         assertThatThrownBy { playerService.update(99, player) }
@@ -95,7 +96,7 @@ class PlayerServiceImplTest {
 
     @Test
     fun should_deletePlayer_when_playerExists() {
-        val player = Player(id = 1, name = "John", surname = "Doe", email = "john@test.com", age = 25, level = Level.BEGINNER)
+        val player = Player(id = 1, name = "John", surname = "Doe", email = "john@test.com", age = 25, level = Level.BEGINNER, category = Category.LOISIR)
         `when`(playerRepository.findById(1)).thenReturn(player)
 
         playerService.delete(1)

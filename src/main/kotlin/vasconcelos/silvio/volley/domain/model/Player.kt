@@ -6,5 +6,6 @@ data class Player(
     val surname: String,
     val email: String,
     val age: Int,
-    val level: Level
+    val level: Level,
+    val category: Category
 )
